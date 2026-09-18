@@ -1,0 +1,841 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L1 Triage Console</title>
+<style>
+  :root{
+    --bg:#F3F4F8;
+    --surface:#FFFFFF;
+    --surface-2:#ECEEF5;
+    --border:#DCE0EA;
+    --ink:#171A24;
+    --ink-soft:#5B6072;
+    --ink-faint:#8B90A3;
+    --accent:#3454D1;
+    --accent-ink:#FFFFFF;
+    --accent-soft:#E7ECFC;
+    --accent-2:#9C6410;
+    --accent-2-soft:#F7ECD9;
+    --good:#1F8A5C;
+    --good-soft:#E3F5EC;
+    --danger:#B3403A;
+    --danger-soft:#FBEAE8;
+    --shadow:0 1px 2px rgba(23,26,36,.06), 0 8px 24px -12px rgba(23,26,36,.18);
+    --radius:14px;
+    --radius-sm:9px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0E111C;
+      --surface:#171B29;
+      --surface-2:#1F2436;
+      --border:#2C3148;
+      --ink:#E8E9F3;
+      --ink-soft:#A2A7BC;
+      --ink-faint:#767C92;
+      --accent:#7C93F2;
+      --accent-ink:#0E111C;
+      --accent-soft:rgba(124,147,242,.16);
+      --accent-2:#E2A44C;
+      --accent-2-soft:rgba(226,164,76,.15);
+      --good:#49C08E;
+      --good-soft:rgba(73,192,142,.14);
+      --danger:#E27C74;
+      --danger-soft:rgba(226,124,116,.14);
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0E111C;
+    --surface:#171B29;
+    --surface-2:#1F2436;
+    --border:#2C3148;
+    --ink:#E8E9F3;
+    --ink-soft:#A2A7BC;
+    --ink-faint:#767C92;
+    --accent:#7C93F2;
+    --accent-ink:#0E111C;
+    --accent-soft:rgba(124,147,242,.16);
+    --accent-2:#E2A44C;
+    --accent-2-soft:rgba(226,164,76,.15);
+    --good:#49C08E;
+    --good-soft:rgba(73,192,142,.14);
+    --danger:#E27C74;
+    --danger-soft:rgba(226,124,116,.14);
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{background:var(--bg);}
+  body{
+    margin:0;
+    font-family:"IBM Plex Sans",-apple-system,Segoe UI,sans-serif;
+    font-size:15px;
+    line-height:1.5;
+    color:var(--ink);
+    background:var(--bg);
+    padding-inline:16px;
+  }
+  h1,h2,h3{font-family:"Sora",-apple-system,Segoe UI,sans-serif; text-wrap:balance; margin:0;}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,monospace;}
+  button{font:inherit; color:inherit;}
+  .icon{width:15px; height:15px; display:block;}
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important; transition-duration:.001ms !important;}
+  }
+
+  .wrap{max-width:900px; margin:0 auto; padding-bottom:64px;}
+
+  /* Top bar */
+  .topbar{
+    position:sticky; top:env(safe-area-inset-top,0px);
+    background:var(--bg); z-index:5;
+    padding-block:18px 12px;
+    display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    border-bottom:1px solid var(--border);
+    margin-bottom:18px;
+  }
+  .brand{display:flex; align-items:center; gap:10px;}
+  .brand-mark{
+    width:34px; height:34px; border-radius:9px; background:var(--accent); color:var(--accent-ink);
+    display:flex; align-items:center; justify-content:center; font-family:"Sora"; font-weight:700; font-size:13px; flex:none;
+  }
+  .brand-text h1{font-size:1.05rem; font-weight:700;}
+  .brand-text p{margin:1px 0 0; font-size:.75rem; color:var(--ink-faint);}
+
+  .role-block{display:flex; flex-direction:column; align-items:flex-end; gap:4px;}
+  .role-toggle{display:flex; border:1px solid var(--border); border-radius:999px; background:var(--surface); padding:2px;}
+  .role-toggle button{
+    border:none; background:transparent; padding:6px 13px; border-radius:999px; font-size:.8rem; font-weight:600;
+    cursor:pointer; color:var(--ink-soft);
+  }
+  .role-toggle button.active{background:var(--accent); color:var(--accent-ink);}
+  .role-caption{font-size:.7rem; color:var(--ink-faint); text-align:right; max-width:260px;}
+  .role-caption strong{color:var(--ink-soft);}
+
+  /* Nav tabs */
+  .tabs{display:flex; gap:22px; border-bottom:1px solid var(--border); margin-bottom:24px;}
+  .tab-btn{
+    background:none; border:none; cursor:pointer; padding:0 0 12px; font-size:.9rem; font-weight:600;
+    color:var(--ink-faint); border-bottom:2px solid transparent; margin-bottom:-1px;
+  }
+  .tab-btn.active{color:var(--ink); border-bottom-color:var(--accent);}
+
+  h2.section-title{font-size:1.15rem; font-weight:700; margin-bottom:4px;}
+  p.section-sub{color:var(--ink-soft); font-size:.85rem; margin:0 0 18px;}
+
+  /* Category grid */
+  .cat-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px;}
+  .cat-card{
+    text-align:left; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px; cursor:pointer; display:flex; flex-direction:column; gap:10px; box-shadow:var(--shadow);
+    transition:transform .12s ease, border-color .12s ease;
+  }
+  .cat-card:hover{transform:translateY(-2px); border-color:var(--accent);}
+  .cat-code{
+    width:40px; height:40px; border-radius:10px; background:var(--accent-soft); color:var(--accent);
+    display:flex; align-items:center; justify-content:center; font-family:"IBM Plex Mono"; font-weight:500; font-size:.7rem; letter-spacing:.03em;
+  }
+  .cat-card h3{font-size:.95rem; font-weight:600;}
+  .cat-card p{margin:2px 0 0; font-size:.78rem; color:var(--ink-soft);}
+  .cat-card .cat-footer{margin-top:auto; display:flex; align-items:center; justify-content:space-between;}
+  .cat-count{font-size:.7rem; color:var(--ink-faint);}
+  .cat-actions{display:flex; gap:4px;}
+
+  .cat-card-add{
+    border:1.5px dashed var(--border); background:transparent; border-radius:var(--radius); padding:16px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; cursor:pointer;
+    color:var(--ink-faint); min-height:120px;
+  }
+  .cat-card-add:hover{border-color:var(--accent); color:var(--accent);}
+
+  /* Icon buttons */
+  .icon-btn{
+    border:1px solid var(--border); background:var(--surface); border-radius:7px; width:26px; height:26px;
+    display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--ink-faint);
+  }
+  .icon-btn:hover{color:var(--ink); border-color:var(--ink-faint);}
+  .icon-btn.danger-confirm{background:var(--danger); border-color:var(--danger); color:#fff;}
+
+  /* Breadcrumb */
+  .crumb{display:flex; align-items:center; gap:8px; margin-bottom:16px; font-size:.85rem;}
+  .crumb button{background:none; border:none; color:var(--accent); cursor:pointer; font-weight:600; padding:0; display:flex; align-items:center; gap:4px;}
+  .crumb .cur{color:var(--ink-soft);}
+
+  /* Trail */
+  .trail{display:flex; flex-direction:column; gap:10px;}
+  .node-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px 18px;
+    box-shadow:var(--shadow); animation:reveal .28s ease;
+  }
+  @keyframes reveal{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
+  .node-card.terminal-resolution{border-color:var(--good); background:linear-gradient(0deg, var(--good-soft), var(--good-soft)), var(--surface);}
+  .node-card.terminal-escalate{border-color:var(--danger); background:linear-gradient(0deg, var(--danger-soft), var(--danger-soft)), var(--surface);}
+  .node-head{display:flex; align-items:flex-start; justify-content:space-between; gap:12px;}
+  .node-eyebrow{display:flex; align-items:center; gap:6px; font-size:.68rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:6px;}
+  .node-eyebrow.good{color:var(--good);}
+  .node-eyebrow.danger{color:var(--danger);}
+  .node-eyebrow .icon{width:13px; height:13px;}
+  .node-text{font-size:.95rem; line-height:1.5;}
+  .node-tools{display:flex; gap:4px; flex:none;}
+  .answered-tag{display:inline-flex; align-items:center; gap:5px; font-size:.72rem; color:var(--ink-faint); margin-top:8px;}
+  .answered-tag .icon{width:12px; height:12px; color:var(--good);}
+  .choice-tag{display:inline-block; background:var(--accent-soft); color:var(--accent); font-size:.72rem; font-weight:600; padding:5px 10px; border-radius:999px; margin-bottom:8px;}
+
+  .reveal-btn{
+    margin-top:12px; display:inline-flex; align-items:center; gap:6px; background:var(--accent); color:var(--accent-ink);
+    border:none; padding:9px 15px; border-radius:8px; font-size:.82rem; font-weight:600; cursor:pointer;
+  }
+  .choice-row{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;}
+  .choice-btn{
+    background:var(--surface-2); border:1px solid var(--border); padding:9px 14px; border-radius:8px;
+    font-size:.82rem; font-weight:600; cursor:pointer; color:var(--ink);
+  }
+  .choice-btn:hover{border-color:var(--accent); color:var(--accent);}
+
+  .terminal-actions{display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;}
+  .ghost-btn{
+    background:transparent; border:1px solid var(--border); padding:8px 13px; border-radius:8px; font-size:.78rem;
+    font-weight:600; cursor:pointer; color:var(--ink-soft); display:inline-flex; align-items:center; gap:6px;
+  }
+  .ghost-btn:hover{border-color:var(--ink-faint); color:var(--ink);}
+  .ghost-btn.accent{color:var(--accent); border-color:var(--accent-soft);}
+
+  /* Forms */
+  .inline-form{background:var(--surface-2); border:1px dashed var(--border); border-radius:var(--radius); padding:16px; margin-top:8px;}
+  .inline-form h4{font-size:.85rem; margin-bottom:10px;}
+  .field{margin-bottom:10px;}
+  .field label{display:block; font-size:.72rem; font-weight:600; color:var(--ink-soft); margin-bottom:4px;}
+  .field input[type=text], .field textarea, .field select{
+    width:100%; border:1px solid var(--border); border-radius:7px; padding:8px 10px; background:var(--surface);
+    color:var(--ink); font-family:inherit; font-size:.85rem;
+  }
+  .field textarea{min-height:64px; resize:vertical;}
+  .field-row{display:flex; gap:10px;}
+  .field-row .field{flex:1;}
+  .form-actions{display:flex; gap:8px; margin-top:4px;}
+  .btn-primary{background:var(--accent); color:var(--accent-ink); border:none; padding:8px 15px; border-radius:7px; font-size:.82rem; font-weight:600; cursor:pointer;}
+  .btn-secondary{background:transparent; border:1px solid var(--border); padding:8px 15px; border-radius:7px; font-size:.82rem; font-weight:600; cursor:pointer; color:var(--ink-soft);}
+  .check-field{display:flex; align-items:center; gap:7px; font-size:.8rem; color:var(--ink-soft);}
+
+  /* Posts */
+  .post-toolbar{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:16px;}
+  .filter-row{display:flex; gap:6px;}
+  .chip{border:1px solid var(--border); background:var(--surface); padding:6px 12px; border-radius:999px; font-size:.78rem; font-weight:600; color:var(--ink-soft); cursor:pointer;}
+  .chip.active{background:var(--accent); border-color:var(--accent); color:var(--accent-ink);}
+
+  .post-list{display:flex; flex-direction:column; gap:12px;}
+  .post-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px 18px; box-shadow:var(--shadow); position:relative;}
+  .post-card.pinned{border-color:var(--accent-2);}
+  .post-top{display:flex; align-items:flex-start; justify-content:space-between; gap:10px;}
+  .post-badges{display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap;}
+  .badge{font-size:.68rem; font-weight:700; letter-spacing:.03em; text-transform:uppercase; padding:3px 8px; border-radius:5px;}
+  .badge.practice{background:var(--accent-soft); color:var(--accent);}
+  .badge.update{background:var(--accent-2-soft); color:var(--accent-2);}
+  .pin-flag{display:inline-flex; align-items:center; gap:4px; font-size:.7rem; font-weight:600; color:var(--accent-2);}
+  .pin-flag .icon{width:12px; height:12px;}
+  .post-card h3{font-size:.98rem; font-weight:700; margin-bottom:4px;}
+  .post-meta{font-size:.72rem; color:var(--ink-faint); margin-bottom:8px;}
+  .post-body{font-size:.87rem; color:var(--ink); line-height:1.55;}
+  .post-tools{display:flex; gap:4px;}
+
+  /* Data bar (git-backed save workflow) */
+  .data-bar{
+    display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    background:var(--accent-soft); border:1px solid var(--border); border-radius:var(--radius-sm);
+    padding:10px 14px; margin-bottom:20px; font-size:.78rem; color:var(--ink-soft);
+  }
+  .data-bar strong{color:var(--ink);}
+  .data-bar .btn-primary{padding:7px 13px; font-size:.78rem;}
+  .unsaved-dot{display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--accent-2); margin-right:5px;}
+
+  .loading{padding:40px 0; color:var(--ink-faint); font-size:.85rem;}
+  .error-banner{background:var(--danger-soft); border:1px solid var(--danger); color:var(--danger); border-radius:var(--radius-sm); padding:12px 14px; font-size:.82rem; margin-bottom:16px;}
+
+  footer.note{
+    margin-top:36px; padding-top:16px; border-top:1px solid var(--border); font-size:.75rem; color:var(--ink-faint); line-height:1.6;
+  }
+  footer.note a{color:var(--accent); text-decoration:none; cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div class="wrap"><div id="app"><div class="loading">Loading…</div></div></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- data (loaded at runtime from ./data/*.json — see README) ---------- */
+
+  var categories = [];
+  var nodes = {};
+  var posts = [];
+  var dataLoaded = false;
+  var dataError = null;
+  var dirty = false; // true once admin edits diverge from the last-loaded JSON files
+
+  var idCounter = 1;
+  function genId(prefix){ return prefix + '-' + (idCounter++); }
+
+  var state = {
+    role:'reader',
+    view:'questionnaire',
+    selectedCategory:null,
+    trail:[],
+    postFilter:'all',
+    addingCategory:false,
+    addingQuestionAfter:null,
+    editingCategoryId:null,
+    editingNodeId:null,
+    editingPostId:null,
+    newPostOpen:false,
+    pendingDeleteNode:null,
+    pendingDeleteCategory:null,
+    pendingDeletePost:null
+  };
+
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  function icon(name){
+    var d = {
+      pencil:'<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+      trash:'<path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>',
+      plus:'<path d="M12 5v14"/><path d="M5 12h14"/>',
+      check:'<path d="M20 6 9 17l-5-5"/>',
+      alert:'<path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/>',
+      chevronRight:'<path d="m9 18 6-6-6-6"/>',
+      pin:'<path d="M12 17v5"/><path d="M9 10.8a2 2 0 0 1-1.1 1.8l-1.8.9a2 2 0 0 0-1.1 1.8v.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.5a2 2 0 0 0-1.1-1.8l-1.8-.9a2 2 0 0 1-1.1-1.8V7a1 1 0 0 1 1-1 1 1 0 0 0 0-2H8a1 1 0 0 0 0 2 1 1 0 0 1 1 1Z"/>',
+      download:'<path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/>'
+    };
+    return '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + (d[name]||'') + '</svg>';
+  }
+
+  function fmtDate(iso){
+    var d = new Date(iso + 'T00:00:00');
+    if (isNaN(d)) return iso;
+    return d.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});
+  }
+
+  /* ---------- helpers over the data model ---------- */
+
+  function categoryNodes(catId){
+    var out = [];
+    for (var k in nodes) if (nodes[k].categoryId === catId) out.push(nodes[k]);
+    return out;
+  }
+  function questionCount(catId){
+    return categoryNodes(catId).filter(function(n){ return n.type === 'question'; }).length;
+  }
+  function findPointerTo(catId, targetId){
+    var list = categoryNodes(catId);
+    for (var i=0;i<list.length;i++){
+      var n = list[i];
+      if (n.next === targetId) return {node:n, kind:'next'};
+      if (n.choices){
+        for (var j=0;j<n.choices.length;j++){
+          if (n.choices[j].next === targetId) return {node:n, kind:'choice', choiceIndex:j};
+        }
+      }
+    }
+    return null;
+  }
+  // Walks forward from startId along the linear chain, collecting every node up to
+  // and including the next branch point (a node with .choices) or terminal node
+  // (resolution/escalate) — so a whole run of linear questions surfaces at once
+  // instead of one at a time.
+  function walkChain(startId){
+    var out = [];
+    var curId = startId;
+    var guard = 0;
+    while (curId && guard < 50){
+      guard++;
+      var n = nodes[curId];
+      if (!n) break;
+      out.push(curId);
+      if (n.type !== 'question') break;
+      if (n.choices) break;
+      if (!n.next) break;
+      curId = n.next;
+    }
+    return out;
+  }
+
+  function markDirty(){ dirty = true; }
+
+  /* ---------- rendering ---------- */
+
+  function render(){
+    var app = document.getElementById('app');
+    if (dataError){
+      app.innerHTML = '<div class="error-banner"><strong>Could not load portal data.</strong> ' + esc(dataError) +
+        '<br>If you opened this file directly (file://), the data/*.json fetch will be blocked by the browser — serve it over http:// instead (see README), or view it on the published GitHub Pages site.</div>';
+      return;
+    }
+    if (!dataLoaded){ app.innerHTML = '<div class="loading">Loading…</div>'; return; }
+    app.innerHTML = topBar() + tabs() + (state.role==='admin' ? dataBar() : '') +
+      (state.view === 'questionnaire' ? questionnaireView() : postsView()) + footerNote();
+  }
+
+  function topBar(){
+    return '' +
+    '<div class="topbar">' +
+      '<div class="brand">' +
+        '<div class="brand-mark">L1</div>' +
+        '<div class="brand-text"><h1>L1 Triage Console</h1><p>Netradyne CS Technical Support · data lives in this repo’s /data folder</p></div>' +
+      '</div>' +
+      '<div class="role-block">' +
+        '<div class="role-toggle">' +
+          '<button data-action="set-role" data-role="reader" class="' + (state.role==='reader'?'active':'') + '">Reader</button>' +
+          '<button data-action="set-role" data-role="admin" class="' + (state.role==='admin'?'active':'') + '">Edit preview</button>' +
+        '</div>' +
+        '<div class="role-caption">' + (state.role==='admin'
+          ? '<strong>Preview only</strong> — this toggle is not access control. Anyone can switch it in their own browser; only someone who commits to the repo can actually change the published site.'
+          : '<strong>Read view</strong> — what every visitor sees by default.') + '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function tabs(){
+    return '' +
+    '<div class="tabs">' +
+      '<button data-action="set-view" data-view="questionnaire" class="tab-btn ' + (state.view==='questionnaire'?'active':'') + '">Questionnaire</button>' +
+      '<button data-action="set-view" data-view="posts" class="tab-btn ' + (state.view==='posts'?'active':'') + '">Best Practices &amp; Updates</button>' +
+    '</div>';
+  }
+
+  function dataBar(){
+    return '' +
+    '<div class="data-bar">' +
+      '<span>' + (dirty ? '<span class="unsaved-dot"></span><strong>Unsaved changes</strong> — download the updated files and commit them to publish.' : 'No unsaved changes yet — edits below update this preview immediately.') + '</span>' +
+      '<button class="btn-primary" data-action="download-data">' + icon('download') + ' Download updated data</button>' +
+    '</div>';
+  }
+
+  function footerNote(){
+    return '<footer class="note">Content (categories, questions, and posts) is read from <span class="mono">/data/categories.json</span>, <span class="mono">/data/nodes.json</span>, and <span class="mono">/data/posts.json</span> in this repo. To publish an edit: switch to Edit preview, make your change, click “Download updated data,” then replace those three files in the repo (GitHub web UI → upload, or a normal commit) — GitHub Pages redeploys automatically within about a minute.</footer>';
+  }
+
+  /* ---- questionnaire ---- */
+
+  function questionnaireView(){
+    if (!state.selectedCategory) return categoryGrid();
+    return trailView();
+  }
+
+  function categoryGrid(){
+    var html = '<h2 class="section-title">Choose an issue category</h2>' +
+      '<p class="section-sub">Click a category to see the full question sequence at once — no clicking through one at a time.</p>' +
+      '<div class="cat-grid">';
+    categories.forEach(function(c){
+      if (state.editingCategoryId === c.id){
+        html += editCategoryForm(c);
+        return;
+      }
+      html += '<div class="cat-card" data-action="select-category" data-id="' + c.id + '">' +
+        '<div class="cat-code">' + esc(c.code) + '</div>' +
+        '<div><h3>' + esc(c.name) + '</h3><p>' + esc(c.blurb) + '</p></div>' +
+        '<div class="cat-footer">' +
+          '<span class="cat-count">' + questionCount(c.id) + ' question node' + (questionCount(c.id)===1?'':'s') + '</span>' +
+          (state.role==='admin' ? '<span class="cat-actions">' + editCatButton(c.id) + deleteCatButton(c.id) + '</span>' : '') +
+        '</div>' +
+      '</div>';
+    });
+    if (state.role === 'admin'){
+      html += state.addingCategory ? addCategoryForm() :
+        '<button class="cat-card-add" data-action="start-add-category">' + icon('plus') + '<span>Add category</span></button>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function deleteCatButton(catId){
+    var pending = state.pendingDeleteCategory === catId;
+    return '<span class="icon-btn ' + (pending?'danger-confirm':'') + '" data-action="delete-category" data-id="' + catId + '" title="' + (pending?'Click again to confirm':'Delete category') + '">' + icon(pending?'check':'trash') + '</span>';
+  }
+
+  function editCatButton(catId){
+    return '<span class="icon-btn" data-action="edit-category" data-id="' + catId + '" title="Edit category">' + icon('pencil') + '</span>';
+  }
+
+  function editCategoryForm(c){
+    return '' +
+    '<form class="inline-form" data-form="edit-category" data-id="' + c.id + '">' +
+      '<h4>Edit category</h4>' +
+      '<div class="field"><label for="edit-cat-code">Code</label><input id="edit-cat-code" type="text" value="' + esc(c.code) + '" disabled></div>' +
+      '<div class="field"><label for="edit-cat-name">Category name</label><input id="edit-cat-name" name="name" type="text" value="' + esc(c.name) + '" required></div>' +
+      '<div class="field"><label for="edit-cat-blurb">Short description</label><input id="edit-cat-blurb" name="blurb" type="text" value="' + esc(c.blurb) + '" required></div>' +
+      '<div class="form-actions">' +
+        '<button type="submit" class="btn-primary">Save</button>' +
+        '<button type="button" class="btn-secondary" data-action="cancel-edit-category">Cancel</button>' +
+      '</div>' +
+    '</form>';
+  }
+
+  function addCategoryForm(){
+    return '' +
+    '<form class="inline-form" data-form="add-category" style="grid-column:1/-1;">' +
+      '<h4>New issue category</h4>' +
+      '<div class="field-row">' +
+        '<div class="field" style="max-width:110px;"><label for="new-cat-code">Code</label><input id="new-cat-code" name="code" type="text" maxlength="4" placeholder="e.g. TEL" required></div>' +
+        '<div class="field"><label for="new-cat-name">Category name</label><input id="new-cat-name" name="name" type="text" placeholder="e.g. Telematics Integrations" required></div>' +
+      '</div>' +
+      '<div class="field"><label for="new-cat-blurb">Short description</label><input id="new-cat-blurb" name="blurb" type="text" placeholder="One line shown on the tile" required></div>' +
+      '<div class="field"><label for="new-cat-q1">First question</label><textarea id="new-cat-q1" name="q1" placeholder="The first question an agent should ask" required></textarea></div>' +
+      '<div class="form-actions">' +
+        '<button type="submit" class="btn-primary">Create category</button>' +
+        '<button type="button" class="btn-secondary" data-action="cancel-add-category">Cancel</button>' +
+      '</div>' +
+    '</form>';
+  }
+
+  function trailView(){
+    var cat = categories.filter(function(c){ return c.id === state.selectedCategory; })[0];
+    if (!cat){ state.selectedCategory = null; return categoryGrid(); }
+    var html = '<div class="crumb">' +
+      '<button data-action="back-to-categories">' + icon('chevronRight') + ' All categories</button>' +
+      '<span>/</span><span class="cur">' + esc(cat.name) + '</span>' +
+    '</div>';
+    html += '<div class="trail">';
+    state.trail.forEach(function(nodeId, i){
+      html += nodeCard(nodeId, i);
+    });
+    html += '</div>';
+    return html;
+  }
+
+  function nodeCard(nodeId, index){
+    var n = nodes[nodeId];
+    if (!n) return '';
+    var isLast = index === state.trail.length - 1;
+
+    if (state.editingNodeId === nodeId){
+      return '<div class="node-card">' +
+        '<form data-form="edit-node" data-id="' + n.id + '">' +
+          '<div class="field"><label for="edit-node-text">Question / guidance text</label><textarea id="edit-node-text" name="text" required>' + esc(n.text) + '</textarea></div>' +
+          '<div class="form-actions"><button type="submit" class="btn-primary">Save</button><button type="button" class="btn-secondary" data-action="cancel-edit-node">Cancel</button></div>' +
+        '</form>' +
+      '</div>';
+    }
+
+    var choiceTag = '';
+    if (index > 0){
+      var prev = nodes[state.trail[index-1]];
+      if (prev && prev.choices){
+        var chosen = prev.choices.filter(function(c){ return c.next === nodeId; })[0];
+        if (chosen) choiceTag = '<span class="choice-tag">→ ' + esc(chosen.label) + '</span><br>';
+      }
+    }
+
+    var canDelete = index > 0 && n.type === 'question' && !n.choices;
+    var tools = state.role === 'admin' ? '<div class="node-tools">' +
+      '<span class="icon-btn" data-action="edit-node" data-id="' + n.id + '" title="Edit text">' + icon('pencil') + '</span>' +
+      (canDelete ? '<span class="icon-btn ' + (state.pendingDeleteNode===n.id?'danger-confirm':'') + '" data-action="delete-node" data-id="' + n.id + '" title="' + (state.pendingDeleteNode===n.id?'Click again to confirm':'Remove this question') + '">' + icon(state.pendingDeleteNode===n.id?'check':'trash') + '</span>' : '') +
+    '</div>' : '';
+
+    if (n.type === 'question'){
+      var eyebrow = '<div class="node-eyebrow">Question ' + (index+1) + '</div>';
+      var body = choiceTag + eyebrow + '<div class="node-text">' + esc(n.text) + '</div>';
+      var action = '';
+      if (isLast && n.choices){
+        action = '<div class="choice-row">' + n.choices.map(function(c){
+          return '<button class="choice-btn" data-action="choose" data-id="' + n.id + '" data-next="' + c.next + '">' + esc(c.label) + '</button>';
+        }).join('') + '</div>';
+      }
+      return '<div class="node-card"><div class="node-head"><div style="flex:1;">' + body + action + '</div>' + tools + '</div></div>';
+    }
+
+    var isEsc = n.type === 'escalate';
+    var cls = isEsc ? 'terminal-escalate' : 'terminal-resolution';
+    var ey = isEsc ? '<div class="node-eyebrow danger">' + icon('alert') + ' Escalate</div>' : '<div class="node-eyebrow good">' + icon('check') + ' Resolution</div>';
+    var termBody = choiceTag + ey + '<div class="node-text">' + esc(n.text) + '</div>';
+    var actions = '';
+    if (isLast){
+      actions = '<div class="terminal-actions">' +
+        '<button class="ghost-btn" data-action="restart-category">Start over</button>' +
+        (state.role==='admin' ? (state.addingQuestionAfter === n.id ? '' : '<button class="ghost-btn accent" data-action="start-add-question" data-id="' + n.id + '">' + icon('plus') + ' Insert follow-up question</button>') : '') +
+      '</div>';
+      if (state.role==='admin' && state.addingQuestionAfter === n.id){
+        actions += '<form class="inline-form" data-form="add-question" data-terminal="' + n.id + '">' +
+          '<h4>Insert a question before this ' + (isEsc?'escalation':'resolution') + '</h4>' +
+          '<div class="field"><label for="new-q-text">Question text</label><textarea id="new-q-text" name="text" placeholder="What should the agent ask next?" required></textarea></div>' +
+          '<div class="form-actions"><button type="submit" class="btn-primary">Insert question</button><button type="button" class="btn-secondary" data-action="cancel-add-question">Cancel</button></div>' +
+        '</form>';
+      }
+    }
+    return '<div class="node-card ' + cls + '"><div class="node-head"><div style="flex:1;">' + termBody + actions + '</div>' + tools + '</div></div>';
+  }
+
+  /* ---- best practices & updates ---- */
+
+  function postsView(){
+    var html = '<h2 class="section-title">Best Practices &amp; Updates</h2>' +
+      '<p class="section-sub">One feed, admin-curated — pinned items always float to the top.</p>';
+    html += '<div class="post-toolbar">' +
+      '<div class="filter-row">' +
+        chipBtn('all','All') + chipBtn('practice','Best Practice') + chipBtn('update','Update') +
+      '</div>' +
+      (state.role==='admin' ? '<button class="btn-primary" data-action="toggle-new-post">' + icon('plus') + ' New post</button>' : '') +
+    '</div>';
+
+    if (state.role==='admin' && state.newPostOpen) html += newPostForm();
+
+    var list = posts.filter(function(p){ return state.postFilter==='all' || p.type===state.postFilter; })
+      .slice().sort(function(a,b){
+        if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+        return a.date < b.date ? 1 : -1;
+      });
+
+    html += '<div class="post-list">';
+    if (!list.length) html += '<p class="section-sub">No posts in this filter yet.</p>';
+    list.forEach(function(p){ html += postCard(p); });
+    html += '</div>';
+    return html;
+  }
+
+  function chipBtn(val,label){
+    return '<button class="chip ' + (state.postFilter===val?'active':'') + '" data-action="set-post-filter" data-filter="' + val + '">' + label + '</button>';
+  }
+
+  function newPostForm(){
+    return '' +
+    '<form class="inline-form" data-form="new-post">' +
+      '<h4>New post</h4>' +
+      '<div class="field-row">' +
+        '<div class="field" style="max-width:160px;"><label for="post-type">Type</label>' +
+          '<select id="post-type" name="type"><option value="practice">Best Practice</option><option value="update">Update</option></select></div>' +
+        '<div class="field"><label for="post-title">Title</label><input id="post-title" name="title" type="text" required></div>' +
+      '</div>' +
+      '<div class="field"><label for="post-body">Body</label><textarea id="post-body" name="body" required></textarea></div>' +
+      '<label class="check-field"><input type="checkbox" name="pinned"> Pin to top</label>' +
+      '<div class="form-actions"><button type="submit" class="btn-primary">Publish</button><button type="button" class="btn-secondary" data-action="toggle-new-post">Cancel</button></div>' +
+    '</form>';
+  }
+
+  function postCard(p){
+    if (state.editingPostId === p.id){
+      return '<div class="post-card">' +
+        '<form data-form="edit-post" data-id="' + p.id + '">' +
+          '<div class="field"><label for="edit-post-title">Title</label><input id="edit-post-title" name="title" type="text" value="' + esc(p.title) + '" required></div>' +
+          '<div class="field"><label for="edit-post-body">Body</label><textarea id="edit-post-body" name="body" required>' + esc(p.body) + '</textarea></div>' +
+          '<div class="form-actions"><button type="submit" class="btn-primary">Save</button><button type="button" class="btn-secondary" data-action="cancel-edit-post">Cancel</button></div>' +
+        '</form>' +
+      '</div>';
+    }
+    var tools = state.role==='admin' ? '<div class="post-tools">' +
+      '<span class="icon-btn" data-action="toggle-pin" data-id="' + p.id + '" title="' + (p.pinned?'Unpin':'Pin to top') + '">' + icon('pin') + '</span>' +
+      '<span class="icon-btn" data-action="edit-post" data-id="' + p.id + '" title="Edit">' + icon('pencil') + '</span>' +
+      '<span class="icon-btn ' + (state.pendingDeletePost===p.id?'danger-confirm':'') + '" data-action="delete-post" data-id="' + p.id + '" title="' + (state.pendingDeletePost===p.id?'Click again to confirm':'Delete') + '">' + icon(state.pendingDeletePost===p.id?'check':'trash') + '</span>' +
+    '</div>' : '';
+    return '<div class="post-card ' + (p.pinned?'pinned':'') + '">' +
+      '<div class="post-top"><div>' +
+        '<div class="post-badges"><span class="badge ' + p.type + '">' + (p.type==='update'?'Update':'Best Practice') + '</span>' + (p.pinned?'<span class="pin-flag">' + icon('pin') + ' Pinned</span>':'') + '</div>' +
+        '<h3>' + esc(p.title) + '</h3>' +
+        '<div class="post-meta">' + esc(p.author) + ' · <span class="mono">' + fmtDate(p.date) + '</span></div>' +
+      '</div>' + tools + '</div>' +
+      '<div class="post-body">' + esc(p.body) + '</div>' +
+    '</div>';
+  }
+
+  /* ---------- download-updated-data (git publish workflow) ---------- */
+
+  function downloadJSON(filename, data){
+    var blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function downloadAllData(){
+    downloadJSON('categories.json', categories);
+    downloadJSON('nodes.json', nodes);
+    downloadJSON('posts.json', posts);
+    dirty = false;
+  }
+
+  /* ---------- event handling ---------- */
+
+  var app = document.getElementById('app');
+
+  app.addEventListener('click', function(e){
+    var el = e.target.closest('[data-action]');
+    if (!el) return;
+    var action = el.dataset.action;
+    var id = el.dataset.id;
+
+    if (action !== 'delete-node') state.pendingDeleteNode = null;
+    if (action !== 'delete-category') state.pendingDeleteCategory = null;
+    if (action !== 'delete-post') state.pendingDeletePost = null;
+    if (action !== 'edit-category') state.editingCategoryId = null;
+
+    switch(action){
+      case 'set-role': state.role = el.dataset.role; break;
+      case 'set-view': state.view = el.dataset.view; break;
+      case 'select-category':
+        state.selectedCategory = id;
+        var c = categories.filter(function(x){return x.id===id;})[0];
+        state.trail = c ? walkChain(c.rootId) : [];
+        break;
+      case 'back-to-categories':
+        state.selectedCategory = null; state.trail = []; state.addingQuestionAfter = null; break;
+      case 'choose':
+        var next = el.dataset.next;
+        if (next) state.trail = state.trail.concat(walkChain(next));
+        break;
+      case 'restart-category':
+        var cat2 = categories.filter(function(x){return x.id===state.selectedCategory;})[0];
+        state.trail = cat2 ? walkChain(cat2.rootId) : [];
+        state.addingQuestionAfter = null;
+        break;
+      case 'start-add-category': state.addingCategory = true; break;
+      case 'cancel-add-category': state.addingCategory = false; break;
+      case 'edit-category': state.editingCategoryId = id; state.addingCategory = false; break;
+      case 'edit-node': state.editingNodeId = id; break;
+      case 'cancel-edit-node': state.editingNodeId = null; break;
+      case 'delete-node':
+        if (state.pendingDeleteNode === id){
+          var ptr = findPointerTo(state.selectedCategory, id);
+          var toDelete = nodes[id];
+          var after = toDelete ? toDelete.next : null;
+          if (ptr){
+            if (ptr.kind === 'next') ptr.node.next = after;
+            else ptr.node.choices[ptr.choiceIndex].next = after;
+          }
+          delete nodes[id];
+          state.trail = state.trail.filter(function(t){ return t !== id; });
+          if (after && state.trail.indexOf(after) === -1) state.trail.push(after);
+          state.pendingDeleteNode = null;
+          markDirty();
+        } else {
+          state.pendingDeleteNode = id;
+        }
+        break;
+      case 'start-add-question': state.addingQuestionAfter = id; break;
+      case 'cancel-add-question': state.addingQuestionAfter = null; break;
+      case 'delete-category':
+        if (state.pendingDeleteCategory === id){
+          categoryNodes(id).forEach(function(n){ delete nodes[n.id]; });
+          categories = categories.filter(function(c){ return c.id !== id; });
+          if (state.selectedCategory === id){ state.selectedCategory = null; state.trail = []; }
+          state.pendingDeleteCategory = null;
+          markDirty();
+        } else {
+          state.pendingDeleteCategory = id;
+        }
+        break;
+      case 'toggle-new-post': state.newPostOpen = !state.newPostOpen; break;
+      case 'set-post-filter': state.postFilter = el.dataset.filter; break;
+      case 'edit-post': state.editingPostId = id; break;
+      case 'cancel-edit-post': state.editingPostId = null; break;
+      case 'toggle-pin':
+        var p = posts.filter(function(x){return x.id===id;})[0];
+        if (p) p.pinned = !p.pinned;
+        markDirty();
+        break;
+      case 'delete-post':
+        if (state.pendingDeletePost === id){
+          posts = posts.filter(function(x){ return x.id !== id; });
+          state.pendingDeletePost = null;
+          markDirty();
+        } else {
+          state.pendingDeletePost = id;
+        }
+        break;
+      case 'download-data': downloadAllData(); break;
+    }
+    render();
+  });
+
+  app.addEventListener('submit', function(e){
+    e.preventDefault();
+    var form = e.target;
+    var name = form.dataset.form;
+    var fd = new FormData(form);
+
+    if (name === 'add-category'){
+      var code = (fd.get('code')||'').toUpperCase().slice(0,4).trim() || 'NEW';
+      var catId = genId('cat');
+      var rootId = catId + '-q1';
+      var resId = catId + '-res';
+      nodes[rootId] = {id:rootId, categoryId:catId, type:'question', text: fd.get('q1'), next: resId};
+      nodes[resId] = {id:resId, categoryId:catId, type:'resolution', text:'Add resolution guidance here — click the pencil icon to fill this in.'};
+      categories.push({id:catId, code:code, name: fd.get('name'), blurb: fd.get('blurb'), rootId: rootId});
+      state.addingCategory = false;
+      markDirty();
+    }
+    else if (name === 'edit-category'){
+      var editCat = categories.filter(function(x){return x.id===form.dataset.id;})[0];
+      if (editCat){ editCat.name = fd.get('name'); editCat.blurb = fd.get('blurb'); }
+      state.editingCategoryId = null;
+      markDirty();
+    }
+    else if (name === 'add-question'){
+      var terminalId = form.dataset.terminal;
+      var newId = genId('q');
+      nodes[newId] = {id:newId, categoryId: state.selectedCategory, type:'question', text: fd.get('text'), next: terminalId};
+      var ptr = findPointerTo(state.selectedCategory, terminalId);
+      if (ptr){
+        if (ptr.kind === 'next') ptr.node.next = newId;
+        else ptr.node.choices[ptr.choiceIndex].next = newId;
+      }
+      var idx = state.trail.indexOf(terminalId);
+      if (idx > -1) state.trail = state.trail.slice(0, idx).concat(walkChain(newId));
+      state.addingQuestionAfter = null;
+      markDirty();
+    }
+    else if (name === 'edit-node'){
+      var n = nodes[form.dataset.id];
+      if (n) n.text = fd.get('text');
+      state.editingNodeId = null;
+      markDirty();
+    }
+    else if (name === 'new-post'){
+      posts.unshift({
+        id: genId('p'), type: fd.get('type'), pinned: fd.get('pinned') === 'on',
+        title: fd.get('title'), body: fd.get('body'),
+        author: 'Govind B. — Manager', date: new Date().toISOString().slice(0,10)
+      });
+      state.newPostOpen = false;
+      markDirty();
+    }
+    else if (name === 'edit-post'){
+      var p = posts.filter(function(x){return x.id===form.dataset.id;})[0];
+      if (p){ p.title = fd.get('title'); p.body = fd.get('body'); }
+      state.editingPostId = null;
+      markDirty();
+    }
+    render();
+  });
+
+  /* ---------- boot: load data then render ---------- */
+
+  function loadData(){
+    Promise.all([
+      fetch('data/categories.json').then(function(r){ if(!r.ok) throw new Error('categories.json: HTTP ' + r.status); return r.json(); }),
+      fetch('data/nodes.json').then(function(r){ if(!r.ok) throw new Error('nodes.json: HTTP ' + r.status); return r.json(); }),
+      fetch('data/posts.json').then(function(r){ if(!r.ok) throw new Error('posts.json: HTTP ' + r.status); return r.json(); })
+    ]).then(function(results){
+      categories = results[0];
+      nodes = results[1];
+      posts = results[2];
+      dataLoaded = true;
+      render();
+    }).catch(function(err){
+      dataError = err.message || String(err);
+      render();
+    });
+  }
+
+  loadData();
+})();
+</script>
+</body>
+</html>
