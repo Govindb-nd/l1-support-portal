@@ -10,8 +10,12 @@ static page that reads its content from three JSON files in this repo.
 ```
 l1-support-portal/
   index.html          the whole app (markup, styles, logic)
+  assets/
+    netradyne-mark-green.png   logomark (used as the Home button + favicon)
+    netradyne-full-black.png   full logo, light backgrounds
+    netradyne-full-white.png   full logo, dark backgrounds (auto-swapped)
   data/
-    categories.json    the 5 issue categories shown as tiles
+    categories.json    the issue categories shown as tiles
     nodes.json          every question / resolution / escalation node
     posts.json          Best Practices & Updates feed items
 ```
@@ -42,6 +46,17 @@ git branch -M main
 git remote add origin https://github.com/<your-account>/l1-support-portal.git
 git push -u origin main
 ```
+
+### Deploying a code update (this file, styling, or a new feature)
+
+This is different from the day-to-day content edits below. Whenever `index.html`
+or the `assets/` folder changes — like the branding/redesign update, or a new
+feature — copy the whole updated folder into your existing local clone with
+GitHub Desktop (or File Explorer/Finder), replacing `index.html` and the
+`assets/` folder, then Commit and Push in GitHub Desktop, same as any other
+change. The `data/` folder should NOT be touched during a code update — leave
+your live `categories.json`, `nodes.json`, and `posts.json` as they are so you
+don't lose content that's already been published.
 
 (Replace `<your-account>` with wherever you created the repo — your personal
 account for now, or the `netradyne` org later if that access clears up.)

@@ -3,85 +3,100 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>L1 Triage Console</title>
+<title>L1 Support Triage Console</title>
+<link rel="icon" type="image/png" href="assets/netradyne-mark-green.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#F3F4F8;
+    --bg:#F6F6F6;
     --surface:#FFFFFF;
-    --surface-2:#ECEEF5;
-    --border:#DCE0EA;
-    --ink:#171A24;
-    --ink-soft:#5B6072;
-    --ink-faint:#8B90A3;
-    --accent:#3454D1;
+    --surface-2:#EEEEEE;
+    --border:#D7DBDC;
+    --ink:#1C282D;
+    --ink-soft:#37484F;
+    --ink-faint:#859195;
+    --accent:#28A83D;
     --accent-ink:#FFFFFF;
-    --accent-soft:#E7ECFC;
+    --accent-soft:#DBFBD8;
+    --accent-strong:#195633;
     --accent-2:#9C6410;
     --accent-2-soft:#F7ECD9;
-    --good:#1F8A5C;
-    --good-soft:#E3F5EC;
-    --danger:#B3403A;
-    --danger-soft:#FBEAE8;
+    --good:#195633;
+    --good-soft:#DBFBD8;
+    --danger:#B54708;
+    --danger-soft:#FBEFE3;
     --shadow:0 1px 2px rgba(23,26,36,.06), 0 8px 24px -12px rgba(23,26,36,.18);
     --radius:14px;
     --radius-sm:9px;
+    --font-head:"Fraunces",Georgia,serif;
+    --font-body:"Manrope",-apple-system,"Segoe UI",sans-serif;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-      --bg:#0E111C;
-      --surface:#171B29;
-      --surface-2:#1F2436;
-      --border:#2C3148;
-      --ink:#E8E9F3;
-      --ink-soft:#A2A7BC;
-      --ink-faint:#767C92;
-      --accent:#7C93F2;
-      --accent-ink:#0E111C;
-      --accent-soft:rgba(124,147,242,.16);
+      --bg:#12181A;
+      --surface:#1B2426;
+      --surface-2:#212C2F;
+      --border:#303B3D;
+      --ink:#F2F5F4;
+      --ink-soft:#B7C2C4;
+      --ink-faint:#8B9799;
+      --accent:#3DB174;
+      --accent-ink:#0F1713;
+      --accent-soft:rgba(61,177,116,.18);
+      --accent-strong:#6FE0A0;
       --accent-2:#E2A44C;
       --accent-2-soft:rgba(226,164,76,.15);
-      --good:#49C08E;
-      --good-soft:rgba(73,192,142,.14);
-      --danger:#E27C74;
-      --danger-soft:rgba(226,124,116,.14);
-      --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+      --good:#6FE0A0;
+      --good-soft:rgba(111,224,160,.14);
+      --danger:#F0AD6E;
+      --danger-soft:rgba(240,173,110,.14);
+      --shadow:0 1px 2px rgba(0,0,0,.35), 0 8px 24px -12px rgba(0,0,0,.55);
     }
+    :root:not([data-theme="light"]) .logo-light{display:none;}
+    :root:not([data-theme="light"]) .logo-dark{display:inline-block;}
   }
   :root[data-theme="dark"]{
-    --bg:#0E111C;
-    --surface:#171B29;
-    --surface-2:#1F2436;
-    --border:#2C3148;
-    --ink:#E8E9F3;
-    --ink-soft:#A2A7BC;
-    --ink-faint:#767C92;
-    --accent:#7C93F2;
-    --accent-ink:#0E111C;
-    --accent-soft:rgba(124,147,242,.16);
+    --bg:#12181A;
+    --surface:#1B2426;
+    --surface-2:#212C2F;
+    --border:#303B3D;
+    --ink:#F2F5F4;
+    --ink-soft:#B7C2C4;
+    --ink-faint:#8B9799;
+    --accent:#3DB174;
+    --accent-ink:#0F1713;
+    --accent-soft:rgba(61,177,116,.18);
+    --accent-strong:#6FE0A0;
     --accent-2:#E2A44C;
     --accent-2-soft:rgba(226,164,76,.15);
-    --good:#49C08E;
-    --good-soft:rgba(73,192,142,.14);
-    --danger:#E27C74;
-    --danger-soft:rgba(226,124,116,.14);
-    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+    --good:#6FE0A0;
+    --good-soft:rgba(111,224,160,.14);
+    --danger:#F0AD6E;
+    --danger-soft:rgba(240,173,110,.14);
+    --shadow:0 1px 2px rgba(0,0,0,.35), 0 8px 24px -12px rgba(0,0,0,.55);
   }
+  :root[data-theme="dark"] .logo-light{display:none;}
+  :root[data-theme="dark"] .logo-dark{display:inline-block;}
 
   *{box-sizing:border-box;}
   html,body{background:var(--bg);}
   body{
     margin:0;
-    font-family:"IBM Plex Sans",-apple-system,Segoe UI,sans-serif;
+    font-family:var(--font-body);
     font-size:15px;
     line-height:1.5;
     color:var(--ink);
     background:var(--bg);
     padding-inline:16px;
   }
-  h1,h2,h3{font-family:"Sora",-apple-system,Segoe UI,sans-serif; text-wrap:balance; margin:0;}
-  .mono{font-family:"IBM Plex Mono",ui-monospace,monospace;}
+  h1{font-family:var(--font-head); font-weight:500; text-wrap:balance; margin:0;}
+  h2,h3{font-family:var(--font-body); font-weight:700; text-wrap:balance; margin:0;}
+  .mono{font-family:ui-monospace,"IBM Plex Mono",monospace;}
   button{font:inherit; color:inherit;}
   .icon{width:15px; height:15px; display:block;}
+  .logo-dark{display:none;}
   @media (prefers-reduced-motion: reduce){
     *{animation-duration:.001ms !important; transition-duration:.001ms !important;}
   }
@@ -97,13 +112,16 @@
     border-bottom:1px solid var(--border);
     margin-bottom:18px;
   }
-  .brand{display:flex; align-items:center; gap:10px;}
+  .brand{display:flex; align-items:center; gap:12px;}
   .brand-mark{
-    width:34px; height:34px; border-radius:9px; background:var(--accent); color:var(--accent-ink);
-    display:flex; align-items:center; justify-content:center; font-family:"Sora"; font-weight:700; font-size:13px; flex:none;
+    width:38px; height:38px; border-radius:10px; background:var(--surface); border:1px solid var(--border);
+    display:flex; align-items:center; justify-content:center; padding:7px; flex:none; cursor:pointer;
+    transition:border-color .12s ease, transform .12s ease;
   }
-  .brand-text h1{font-size:1.05rem; font-weight:700;}
-  .brand-text p{margin:1px 0 0; font-size:.75rem; color:var(--ink-faint);}
+  .brand-mark:hover{border-color:var(--accent); transform:translateY(-1px);}
+  .brand-mark img{width:100%; height:100%; object-fit:contain; display:block;}
+  .brand-text h1{font-size:1.2rem;}
+  .brand-text p{margin:2px 0 0; font-size:.75rem; color:var(--ink-faint);}
 
   .role-block{display:flex; flex-direction:column; align-items:flex-end; gap:4px;}
   .role-toggle{display:flex; border:1px solid var(--border); border-radius:999px; background:var(--surface); padding:2px;}
@@ -123,7 +141,7 @@
   }
   .tab-btn.active{color:var(--ink); border-bottom-color:var(--accent);}
 
-  h2.section-title{font-size:1.15rem; font-weight:700; margin-bottom:4px;}
+  h2.section-title{font-size:1.15rem; margin-bottom:4px;}
   p.section-sub{color:var(--ink-soft); font-size:.85rem; margin:0 0 18px;}
 
   /* Category grid */
@@ -135,10 +153,10 @@
   }
   .cat-card:hover{transform:translateY(-2px); border-color:var(--accent);}
   .cat-code{
-    width:40px; height:40px; border-radius:10px; background:var(--accent-soft); color:var(--accent);
-    display:flex; align-items:center; justify-content:center; font-family:"IBM Plex Mono"; font-weight:500; font-size:.7rem; letter-spacing:.03em;
+    width:40px; height:40px; border-radius:10px; background:var(--accent-soft); color:var(--accent-strong);
+    display:flex; align-items:center; justify-content:center; font-family:ui-monospace,monospace; font-weight:600; font-size:.7rem; letter-spacing:.03em;
   }
-  .cat-card h3{font-size:.95rem; font-weight:600;}
+  .cat-card h3{font-size:.95rem; font-weight:700;}
   .cat-card p{margin:2px 0 0; font-size:.78rem; color:var(--ink-soft);}
   .cat-card .cat-footer{margin-top:auto; display:flex; align-items:center; justify-content:space-between;}
   .cat-count{font-size:.7rem; color:var(--ink-faint);}
@@ -161,8 +179,16 @@
 
   /* Breadcrumb */
   .crumb{display:flex; align-items:center; gap:8px; margin-bottom:16px; font-size:.85rem;}
-  .crumb button{background:none; border:none; color:var(--accent); cursor:pointer; font-weight:600; padding:0; display:flex; align-items:center; gap:4px;}
+  .crumb button{background:none; border:none; color:var(--accent-strong); cursor:pointer; font-weight:600; padding:0; display:flex; align-items:center; gap:4px;}
   .crumb .cur{color:var(--ink-soft);}
+
+  /* Empty category state */
+  .empty-state{
+    background:var(--surface); border:1px dashed var(--border); border-radius:var(--radius);
+    padding:24px; text-align:center; color:var(--ink-soft); margin-bottom:12px;
+  }
+  .empty-state p{margin:0 0 12px;}
+  .empty-state .btn-primary{margin:0 auto;}
 
   /* Trail */
   .trail{display:flex; flex-direction:column; gap:10px;}
@@ -174,7 +200,7 @@
   .node-card.terminal-resolution{border-color:var(--good); background:linear-gradient(0deg, var(--good-soft), var(--good-soft)), var(--surface);}
   .node-card.terminal-escalate{border-color:var(--danger); background:linear-gradient(0deg, var(--danger-soft), var(--danger-soft)), var(--surface);}
   .node-head{display:flex; align-items:flex-start; justify-content:space-between; gap:12px;}
-  .node-eyebrow{display:flex; align-items:center; gap:6px; font-size:.68rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:6px;}
+  .node-eyebrow{display:flex; align-items:center; gap:6px; font-size:.68rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:6px;}
   .node-eyebrow.good{color:var(--good);}
   .node-eyebrow.danger{color:var(--danger);}
   .node-eyebrow .icon{width:13px; height:13px;}
@@ -182,7 +208,7 @@
   .node-tools{display:flex; gap:4px; flex:none;}
   .answered-tag{display:inline-flex; align-items:center; gap:5px; font-size:.72rem; color:var(--ink-faint); margin-top:8px;}
   .answered-tag .icon{width:12px; height:12px; color:var(--good);}
-  .choice-tag{display:inline-block; background:var(--accent-soft); color:var(--accent); font-size:.72rem; font-weight:600; padding:5px 10px; border-radius:999px; margin-bottom:8px;}
+  .choice-tag{display:inline-block; background:var(--accent-soft); color:var(--accent-strong); font-size:.72rem; font-weight:600; padding:5px 10px; border-radius:999px; margin-bottom:8px;}
 
   .reveal-btn{
     margin-top:12px; display:inline-flex; align-items:center; gap:6px; background:var(--accent); color:var(--accent-ink);
@@ -193,7 +219,7 @@
     background:var(--surface-2); border:1px solid var(--border); padding:9px 14px; border-radius:8px;
     font-size:.82rem; font-weight:600; cursor:pointer; color:var(--ink);
   }
-  .choice-btn:hover{border-color:var(--accent); color:var(--accent);}
+  .choice-btn:hover{border-color:var(--accent); color:var(--accent-strong);}
 
   .terminal-actions{display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;}
   .ghost-btn{
@@ -201,11 +227,11 @@
     font-weight:600; cursor:pointer; color:var(--ink-soft); display:inline-flex; align-items:center; gap:6px;
   }
   .ghost-btn:hover{border-color:var(--ink-faint); color:var(--ink);}
-  .ghost-btn.accent{color:var(--accent); border-color:var(--accent-soft);}
+  .ghost-btn.accent{color:var(--accent-strong); border-color:var(--accent-soft);}
 
   /* Forms */
   .inline-form{background:var(--surface-2); border:1px dashed var(--border); border-radius:var(--radius); padding:16px; margin-top:8px;}
-  .inline-form h4{font-size:.85rem; margin-bottom:10px;}
+  .inline-form h4{font-size:.85rem; margin-bottom:10px; font-family:var(--font-body); font-weight:700;}
   .field{margin-bottom:10px;}
   .field label{display:block; font-size:.72rem; font-weight:600; color:var(--ink-soft); margin-bottom:4px;}
   .field input[type=text], .field textarea, .field select{
@@ -215,8 +241,10 @@
   .field textarea{min-height:64px; resize:vertical;}
   .field-row{display:flex; gap:10px;}
   .field-row .field{flex:1;}
+  .field-hint{font-size:.74rem; color:var(--ink-faint); margin:-4px 0 10px;}
   .form-actions{display:flex; gap:8px; margin-top:4px;}
-  .btn-primary{background:var(--accent); color:var(--accent-ink); border:none; padding:8px 15px; border-radius:7px; font-size:.82rem; font-weight:600; cursor:pointer;}
+  .btn-primary{background:var(--accent); color:var(--accent-ink); border:none; padding:8px 15px; border-radius:7px; font-size:.82rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:6px;}
+  .btn-primary:hover{background:var(--accent-strong);}
   .btn-secondary{background:transparent; border:1px solid var(--border); padding:8px 15px; border-radius:7px; font-size:.82rem; font-weight:600; cursor:pointer; color:var(--ink-soft);}
   .check-field{display:flex; align-items:center; gap:7px; font-size:.8rem; color:var(--ink-soft);}
 
@@ -232,7 +260,7 @@
   .post-top{display:flex; align-items:flex-start; justify-content:space-between; gap:10px;}
   .post-badges{display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap;}
   .badge{font-size:.68rem; font-weight:700; letter-spacing:.03em; text-transform:uppercase; padding:3px 8px; border-radius:5px;}
-  .badge.practice{background:var(--accent-soft); color:var(--accent);}
+  .badge.practice{background:var(--accent-soft); color:var(--accent-strong);}
   .badge.update{background:var(--accent-2-soft); color:var(--accent-2);}
   .pin-flag{display:inline-flex; align-items:center; gap:4px; font-size:.7rem; font-weight:600; color:var(--accent-2);}
   .pin-flag .icon{width:12px; height:12px;}
@@ -257,7 +285,9 @@
   footer.note{
     margin-top:36px; padding-top:16px; border-top:1px solid var(--border); font-size:.75rem; color:var(--ink-faint); line-height:1.6;
   }
-  footer.note a{color:var(--accent); text-decoration:none; cursor:pointer;}
+  footer.note a{color:var(--accent-strong); text-decoration:none; cursor:pointer;}
+  .footer-brand{margin-bottom:12px; opacity:.9;}
+  .footer-brand img{height:17px; width:auto; vertical-align:middle;}
 </style>
 </head>
 <body>
@@ -287,6 +317,7 @@
     trail:[],
     postFilter:'all',
     addingCategory:false,
+    addingRootNodeFor:null,
     addingQuestionAfter:null,
     editingCategoryId:null,
     editingNodeId:null,
@@ -330,8 +361,8 @@
     for (var k in nodes) if (nodes[k].categoryId === catId) out.push(nodes[k]);
     return out;
   }
-  function questionCount(catId){
-    return categoryNodes(catId).filter(function(n){ return n.type === 'question'; }).length;
+  function nodeCountAll(catId){
+    return categoryNodes(catId).length;
   }
   function findPointerTo(catId, targetId){
     var list = categoryNodes(catId);
@@ -369,6 +400,19 @@
 
   function markDirty(){ dirty = true; }
 
+  function resetTransientState(){
+    state.addingCategory = false;
+    state.addingRootNodeFor = null;
+    state.addingQuestionAfter = null;
+    state.editingCategoryId = null;
+    state.editingNodeId = null;
+    state.editingPostId = null;
+    state.newPostOpen = false;
+    state.pendingDeleteNode = null;
+    state.pendingDeleteCategory = null;
+    state.pendingDeletePost = null;
+  }
+
   /* ---------- rendering ---------- */
 
   function render(){
@@ -387,8 +431,8 @@
     return '' +
     '<div class="topbar">' +
       '<div class="brand">' +
-        '<div class="brand-mark">L1</div>' +
-        '<div class="brand-text"><h1>L1 Triage Console</h1><p>Netradyne CS Technical Support · data lives in this repo’s /data folder</p></div>' +
+        '<button class="brand-mark" data-action="go-home" title="Home" aria-label="Home"><img src="assets/netradyne-mark-green.png" alt=""></button>' +
+        '<div class="brand-text"><h1>L1 Support Triage Console</h1><p>Netradyne CS Technical Support</p></div>' +
       '</div>' +
       '<div class="role-block">' +
         '<div class="role-toggle">' +
@@ -396,8 +440,8 @@
           '<button data-action="set-role" data-role="admin" class="' + (state.role==='admin'?'active':'') + '">Edit preview</button>' +
         '</div>' +
         '<div class="role-caption">' + (state.role==='admin'
-          ? '<strong>Preview only</strong> — this toggle is not access control. Anyone can switch it in their own browser; only someone who commits to the repo can actually change the published site.'
-          : '<strong>Read view</strong> — what every visitor sees by default.') + '</div>' +
+          ? '<strong>Preview only</strong> — this toggle is not access control. Anyone can switch it in their own browser; only someone who commits to the repo can actually change the published site. Reach out to the page admin to make any additions or changes.'
+          : '<strong>Read only</strong>') + '</div>' +
       '</div>' +
     '</div>';
   }
@@ -419,7 +463,9 @@
   }
 
   function footerNote(){
-    return '<footer class="note">Content (categories, questions, and posts) is read from <span class="mono">/data/categories.json</span>, <span class="mono">/data/nodes.json</span>, and <span class="mono">/data/posts.json</span> in this repo. To publish an edit: switch to Edit preview, make your change, click “Download updated data,” then replace those three files in the repo (GitHub web UI → upload, or a normal commit) — GitHub Pages redeploys automatically within about a minute.</footer>';
+    return '<footer class="note">' +
+      '<div class="footer-brand"><img class="logo-light" src="assets/netradyne-full-black.png" alt="Netradyne"><img class="logo-dark" src="assets/netradyne-full-white.png" alt="Netradyne"></div>' +
+    '</footer>';
   }
 
   /* ---- questionnaire ---- */
@@ -431,18 +477,19 @@
 
   function categoryGrid(){
     var html = '<h2 class="section-title">Choose an issue category</h2>' +
-      '<p class="section-sub">Click a category to see the full question sequence at once — no clicking through one at a time.</p>' +
+      '<p class="section-sub">Click a category to see the full question sequence.</p>' +
       '<div class="cat-grid">';
     categories.forEach(function(c){
       if (state.editingCategoryId === c.id){
         html += editCategoryForm(c);
         return;
       }
+      var count = nodeCountAll(c.id);
       html += '<div class="cat-card" data-action="select-category" data-id="' + c.id + '">' +
         '<div class="cat-code">' + esc(c.code) + '</div>' +
         '<div><h3>' + esc(c.name) + '</h3><p>' + esc(c.blurb) + '</p></div>' +
         '<div class="cat-footer">' +
-          '<span class="cat-count">' + questionCount(c.id) + ' question node' + (questionCount(c.id)===1?'':'s') + '</span>' +
+          '<span class="cat-count">' + (count ? count + ' node' + (count===1?'':'s') : 'Empty — no nodes yet') + '</span>' +
           (state.role==='admin' ? '<span class="cat-actions">' + editCatButton(c.id) + deleteCatButton(c.id) + '</span>' : '') +
         '</div>' +
       '</div>';
@@ -484,15 +531,27 @@
       '<h4>New issue category</h4>' +
       '<div class="field-row">' +
         '<div class="field" style="max-width:110px;"><label for="new-cat-code">Code</label><input id="new-cat-code" name="code" type="text" maxlength="4" placeholder="e.g. TEL" required></div>' +
-        '<div class="field"><label for="new-cat-name">Category name</label><input id="new-cat-name" name="name" type="text" placeholder="e.g. Telematics Integrations" required></div>' +
+        '<div class="field"><label for="new-cat-name">Category name</label><input id="new-cat-name" name="name" type="text" placeholder="e.g. Telematics integrations" required></div>' +
       '</div>' +
       '<div class="field"><label for="new-cat-blurb">Short description</label><input id="new-cat-blurb" name="blurb" type="text" placeholder="One line shown on the tile" required></div>' +
-      '<div class="field"><label for="new-cat-q1">First question</label><textarea id="new-cat-q1" name="q1" placeholder="The first question an agent should ask" required></textarea></div>' +
+      '<p class="field-hint">The category is created empty — you’ll add its first question, resolution, or escalation after, from inside it.</p>' +
       '<div class="form-actions">' +
         '<button type="submit" class="btn-primary">Create category</button>' +
         '<button type="button" class="btn-secondary" data-action="cancel-add-category">Cancel</button>' +
       '</div>' +
     '</form>';
+  }
+
+  function typeField(idBase, selected){
+    selected = selected || 'question';
+    return '' +
+    '<div class="field"><label for="' + idBase + '">Node type</label>' +
+      '<select id="' + idBase + '" name="type">' +
+        '<option value="question"' + (selected==='question'?' selected':'') + '>Question</option>' +
+        '<option value="resolution"' + (selected==='resolution'?' selected':'') + '>Resolution</option>' +
+        '<option value="escalate"' + (selected==='escalate'?' selected':'') + '>Escalation</option>' +
+      '</select>' +
+    '</div>';
   }
 
   function trailView(){
@@ -502,6 +561,12 @@
       '<button data-action="back-to-categories">' + icon('chevronRight') + ' All categories</button>' +
       '<span>/</span><span class="cur">' + esc(cat.name) + '</span>' +
     '</div>';
+
+    if (!cat.rootId || !nodes[cat.rootId]){
+      html += emptyCategoryState(cat);
+      return html;
+    }
+
     html += '<div class="trail">';
     state.trail.forEach(function(nodeId, i){
       html += nodeCard(nodeId, i);
@@ -510,19 +575,57 @@
     return html;
   }
 
+  function emptyCategoryState(cat){
+    var html = '<div class="empty-state">' +
+      '<p>No questions, resolutions, or escalations yet in <strong>' + esc(cat.name) + '</strong>.</p>' +
+      (state.role==='admin'
+        ? (state.addingRootNodeFor===cat.id ? '' : '<button class="btn-primary" data-action="start-add-root-node" data-id="' + cat.id + '">' + icon('plus') + ' Add first node</button>')
+        : '<p class="section-sub" style="margin:0;">Check back once this category has been filled in.</p>') +
+    '</div>';
+    if (state.role==='admin' && state.addingRootNodeFor===cat.id){
+      html += addRootNodeForm(cat);
+    }
+    return html;
+  }
+
+  function addRootNodeForm(cat){
+    return '' +
+    '<form class="inline-form" data-form="add-root-node" data-cat="' + cat.id + '">' +
+      '<h4>Add the first node for ' + esc(cat.name) + '</h4>' +
+      typeField('new-root-type') +
+      '<div class="field"><label for="new-root-text">Text</label><textarea id="new-root-text" name="text" placeholder="What should the agent see first?" required></textarea></div>' +
+      '<div class="form-actions"><button type="submit" class="btn-primary">Create node</button><button type="button" class="btn-secondary" data-action="cancel-add-root-node">Cancel</button></div>' +
+    '</form>';
+  }
+
+  function editNodeForm(n){
+    return '<div class="node-card">' +
+      '<form data-form="edit-node" data-id="' + n.id + '">' +
+        typeField('edit-node-type', n.type) +
+        '<div class="field"><label for="edit-node-text">Text</label><textarea id="edit-node-text" name="text" required>' + esc(n.text) + '</textarea></div>' +
+        (n.choices ? '<p class="field-hint">This node has branching choices — switching it away from Question will remove them.</p>' : '') +
+        '<div class="form-actions"><button type="submit" class="btn-primary">Save</button><button type="button" class="btn-secondary" data-action="cancel-edit-node">Cancel</button></div>' +
+      '</form>' +
+    '</div>';
+  }
+
+  function addNodeForm(terminalId){
+    return '' +
+    '<form class="inline-form" data-form="add-node" data-terminal="' + terminalId + '">' +
+      '<h4>Insert a node here</h4>' +
+      typeField('new-node-type') +
+      '<div class="field"><label for="new-node-text">Text</label><textarea id="new-node-text" name="text" placeholder="What should the agent see next?" required></textarea></div>' +
+      '<p class="field-hint">Question adds a follow-up step before this card. Resolution or Escalation replaces this card instead.</p>' +
+      '<div class="form-actions"><button type="submit" class="btn-primary">Insert node</button><button type="button" class="btn-secondary" data-action="cancel-add-question">Cancel</button></div>' +
+    '</form>';
+  }
+
   function nodeCard(nodeId, index){
     var n = nodes[nodeId];
     if (!n) return '';
     var isLast = index === state.trail.length - 1;
 
-    if (state.editingNodeId === nodeId){
-      return '<div class="node-card">' +
-        '<form data-form="edit-node" data-id="' + n.id + '">' +
-          '<div class="field"><label for="edit-node-text">Question / guidance text</label><textarea id="edit-node-text" name="text" required>' + esc(n.text) + '</textarea></div>' +
-          '<div class="form-actions"><button type="submit" class="btn-primary">Save</button><button type="button" class="btn-secondary" data-action="cancel-edit-node">Cancel</button></div>' +
-        '</form>' +
-      '</div>';
-    }
+    if (state.editingNodeId === nodeId) return editNodeForm(n);
 
     var choiceTag = '';
     if (index > 0){
@@ -533,43 +636,44 @@
       }
     }
 
-    var canDelete = index > 0 && n.type === 'question' && !n.choices;
+    var canDelete = index > 0 && !n.choices;
     var tools = state.role === 'admin' ? '<div class="node-tools">' +
-      '<span class="icon-btn" data-action="edit-node" data-id="' + n.id + '" title="Edit text">' + icon('pencil') + '</span>' +
-      (canDelete ? '<span class="icon-btn ' + (state.pendingDeleteNode===n.id?'danger-confirm':'') + '" data-action="delete-node" data-id="' + n.id + '" title="' + (state.pendingDeleteNode===n.id?'Click again to confirm':'Remove this question') + '">' + icon(state.pendingDeleteNode===n.id?'check':'trash') + '</span>' : '') +
+      '<span class="icon-btn" data-action="edit-node" data-id="' + n.id + '" title="Edit">' + icon('pencil') + '</span>' +
+      (canDelete ? '<span class="icon-btn ' + (state.pendingDeleteNode===n.id?'danger-confirm':'') + '" data-action="delete-node" data-id="' + n.id + '" title="' + (state.pendingDeleteNode===n.id?'Click again to confirm':'Remove this node') + '">' + icon(state.pendingDeleteNode===n.id?'check':'trash') + '</span>' : '') +
     '</div>' : '';
 
-    if (n.type === 'question'){
-      var eyebrow = '<div class="node-eyebrow">Question ' + (index+1) + '</div>';
-      var body = choiceTag + eyebrow + '<div class="node-text">' + esc(n.text) + '</div>';
-      var action = '';
-      if (isLast && n.choices){
-        action = '<div class="choice-row">' + n.choices.map(function(c){
-          return '<button class="choice-btn" data-action="choose" data-id="' + n.id + '" data-next="' + c.next + '">' + esc(c.label) + '</button>';
-        }).join('') + '</div>';
-      }
-      return '<div class="node-card"><div class="node-head"><div style="flex:1;">' + body + action + '</div>' + tools + '</div></div>';
+    var cls = '', eyebrow;
+    if (n.type === 'resolution'){
+      cls = 'terminal-resolution';
+      eyebrow = '<div class="node-eyebrow good">' + icon('check') + ' Resolution</div>';
+    } else if (n.type === 'escalate'){
+      cls = 'terminal-escalate';
+      eyebrow = '<div class="node-eyebrow danger">' + icon('alert') + ' Escalate</div>';
+    } else {
+      eyebrow = '<div class="node-eyebrow">Question ' + (index+1) + '</div>';
     }
 
-    var isEsc = n.type === 'escalate';
-    var cls = isEsc ? 'terminal-escalate' : 'terminal-resolution';
-    var ey = isEsc ? '<div class="node-eyebrow danger">' + icon('alert') + ' Escalate</div>' : '<div class="node-eyebrow good">' + icon('check') + ' Resolution</div>';
-    var termBody = choiceTag + ey + '<div class="node-text">' + esc(n.text) + '</div>';
-    var actions = '';
+    var body = choiceTag + eyebrow + '<div class="node-text">' + esc(n.text) + '</div>';
+
+    var action = '';
+    if (isLast && n.type === 'question' && n.choices){
+      action = '<div class="choice-row">' + n.choices.map(function(c){
+        return '<button class="choice-btn" data-action="choose" data-id="' + n.id + '" data-next="' + c.next + '">' + esc(c.label) + '</button>';
+      }).join('') + '</div>';
+    }
+
+    var terminalActions = '';
     if (isLast){
-      actions = '<div class="terminal-actions">' +
+      terminalActions = '<div class="terminal-actions">' +
         '<button class="ghost-btn" data-action="restart-category">Start over</button>' +
-        (state.role==='admin' ? (state.addingQuestionAfter === n.id ? '' : '<button class="ghost-btn accent" data-action="start-add-question" data-id="' + n.id + '">' + icon('plus') + ' Insert follow-up question</button>') : '') +
+        (state.role==='admin' ? (state.addingQuestionAfter === n.id ? '' : '<button class="ghost-btn accent" data-action="start-add-question" data-id="' + n.id + '">' + icon('plus') + ' Insert node</button>') : '') +
       '</div>';
       if (state.role==='admin' && state.addingQuestionAfter === n.id){
-        actions += '<form class="inline-form" data-form="add-question" data-terminal="' + n.id + '">' +
-          '<h4>Insert a question before this ' + (isEsc?'escalation':'resolution') + '</h4>' +
-          '<div class="field"><label for="new-q-text">Question text</label><textarea id="new-q-text" name="text" placeholder="What should the agent ask next?" required></textarea></div>' +
-          '<div class="form-actions"><button type="submit" class="btn-primary">Insert question</button><button type="button" class="btn-secondary" data-action="cancel-add-question">Cancel</button></div>' +
-        '</form>';
+        terminalActions += addNodeForm(n.id);
       }
     }
-    return '<div class="node-card ' + cls + '"><div class="node-head"><div style="flex:1;">' + termBody + actions + '</div>' + tools + '</div></div>';
+
+    return '<div class="node-card ' + cls + '"><div class="node-head"><div style="flex:1;">' + body + action + terminalActions + '</div>' + tools + '</div></div>';
   }
 
   /* ---- best practices & updates ---- */
@@ -677,27 +781,36 @@
     if (action !== 'edit-category') state.editingCategoryId = null;
 
     switch(action){
+      case 'go-home':
+        resetTransientState();
+        state.view = 'questionnaire';
+        state.selectedCategory = null;
+        state.trail = [];
+        break;
       case 'set-role': state.role = el.dataset.role; break;
       case 'set-view': state.view = el.dataset.view; break;
       case 'select-category':
         state.selectedCategory = id;
         var c = categories.filter(function(x){return x.id===id;})[0];
-        state.trail = c ? walkChain(c.rootId) : [];
+        state.trail = (c && c.rootId) ? walkChain(c.rootId) : [];
+        state.addingRootNodeFor = null;
         break;
       case 'back-to-categories':
-        state.selectedCategory = null; state.trail = []; state.addingQuestionAfter = null; break;
+        state.selectedCategory = null; state.trail = []; state.addingQuestionAfter = null; state.addingRootNodeFor = null; break;
       case 'choose':
         var next = el.dataset.next;
         if (next) state.trail = state.trail.concat(walkChain(next));
         break;
       case 'restart-category':
         var cat2 = categories.filter(function(x){return x.id===state.selectedCategory;})[0];
-        state.trail = cat2 ? walkChain(cat2.rootId) : [];
+        state.trail = (cat2 && cat2.rootId) ? walkChain(cat2.rootId) : [];
         state.addingQuestionAfter = null;
         break;
       case 'start-add-category': state.addingCategory = true; break;
       case 'cancel-add-category': state.addingCategory = false; break;
       case 'edit-category': state.editingCategoryId = id; state.addingCategory = false; break;
+      case 'start-add-root-node': state.addingRootNodeFor = id; break;
+      case 'cancel-add-root-node': state.addingRootNodeFor = null; break;
       case 'edit-node': state.editingNodeId = id; break;
       case 'cancel-edit-node': state.editingNodeId = null; break;
       case 'delete-node':
@@ -763,11 +876,7 @@
     if (name === 'add-category'){
       var code = (fd.get('code')||'').toUpperCase().slice(0,4).trim() || 'NEW';
       var catId = genId('cat');
-      var rootId = catId + '-q1';
-      var resId = catId + '-res';
-      nodes[rootId] = {id:rootId, categoryId:catId, type:'question', text: fd.get('q1'), next: resId};
-      nodes[resId] = {id:resId, categoryId:catId, type:'resolution', text:'Add resolution guidance here — click the pencil icon to fill this in.'};
-      categories.push({id:catId, code:code, name: fd.get('name'), blurb: fd.get('blurb'), rootId: rootId});
+      categories.push({id:catId, code:code, name: fd.get('name'), blurb: fd.get('blurb'), rootId: null});
       state.addingCategory = false;
       markDirty();
     }
@@ -777,23 +886,62 @@
       state.editingCategoryId = null;
       markDirty();
     }
-    else if (name === 'add-question'){
+    else if (name === 'add-root-node'){
+      var catId3 = form.dataset.cat;
+      var cat4 = categories.filter(function(x){return x.id===catId3;})[0];
+      var newId2 = genId('n');
+      var chosenType2 = fd.get('type') || 'question';
+      nodes[newId2] = {id:newId2, categoryId: catId3, type: chosenType2, text: fd.get('text')};
+      if (cat4) cat4.rootId = newId2;
+      state.addingRootNodeFor = null;
+      if (state.selectedCategory === catId3) state.trail = walkChain(newId2);
+      markDirty();
+    }
+    else if (name === 'add-node'){
       var terminalId = form.dataset.terminal;
-      var newId = genId('q');
-      nodes[newId] = {id:newId, categoryId: state.selectedCategory, type:'question', text: fd.get('text'), next: terminalId};
-      var ptr = findPointerTo(state.selectedCategory, terminalId);
-      if (ptr){
-        if (ptr.kind === 'next') ptr.node.next = newId;
-        else ptr.node.choices[ptr.choiceIndex].next = newId;
+      var chosenType = fd.get('type') || 'question';
+      var newId = genId('n');
+      var text = fd.get('text');
+      if (chosenType === 'question'){
+        nodes[newId] = {id:newId, categoryId: state.selectedCategory, type:'question', text: text, next: terminalId};
+        var ptr = findPointerTo(state.selectedCategory, terminalId);
+        if (ptr){
+          if (ptr.kind === 'next') ptr.node.next = newId;
+          else ptr.node.choices[ptr.choiceIndex].next = newId;
+        } else {
+          var catA = categories.filter(function(x){return x.id===state.selectedCategory;})[0];
+          if (catA && catA.rootId === terminalId) catA.rootId = newId;
+        }
+        var idx = state.trail.indexOf(terminalId);
+        if (idx > -1) state.trail = state.trail.slice(0, idx).concat(walkChain(newId));
+      } else {
+        // Resolution / escalation can't sit mid-chain — it replaces the terminal card outright.
+        nodes[newId] = {id:newId, categoryId: state.selectedCategory, type: chosenType, text: text};
+        var ptr2 = findPointerTo(state.selectedCategory, terminalId);
+        if (ptr2){
+          if (ptr2.kind === 'next') ptr2.node.next = newId;
+          else ptr2.node.choices[ptr2.choiceIndex].next = newId;
+        } else {
+          var catB = categories.filter(function(x){return x.id===state.selectedCategory;})[0];
+          if (catB && catB.rootId === terminalId) catB.rootId = newId;
+        }
+        delete nodes[terminalId];
+        var idx2 = state.trail.indexOf(terminalId);
+        if (idx2 > -1) state.trail[idx2] = newId;
       }
-      var idx = state.trail.indexOf(terminalId);
-      if (idx > -1) state.trail = state.trail.slice(0, idx).concat(walkChain(newId));
       state.addingQuestionAfter = null;
       markDirty();
     }
     else if (name === 'edit-node'){
       var n = nodes[form.dataset.id];
-      if (n) n.text = fd.get('text');
+      if (n){
+        n.text = fd.get('text');
+        var newType = fd.get('type');
+        if (newType && newType !== n.type){
+          n.type = newType;
+          if (newType !== 'question') delete n.choices;
+        }
+      }
       state.editingNodeId = null;
       markDirty();
     }
