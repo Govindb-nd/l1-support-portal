@@ -1,38 +1,6 @@
 [
-  {
-    "id": "p1",
-    "type": "update",
-    "pinned": true,
-    "title": "IDMS report layout refresh — rolling out this week",
-    "body": "Alerts and Coaching reports have a new column order starting this week. No action needed — if a customer says a report \"looks different,\" this is why.",
-    "author": "Priya S. — SME",
-    "date": "2026-09-15"
-  },
-  {
-    "id": "p2",
-    "type": "practice",
-    "pinned": false,
-    "title": "Confirm tenant timezone before reading alert timestamps",
-    "body": "Alert timestamps are stored in the tenant's configured local timezone, not yours. Check the tenant timezone in IDMS before telling a customer an alert \"happened at the wrong time.\"",
-    "author": "Govind B. — Manager",
-    "date": "2026-09-10"
-  },
-  {
-    "id": "p3",
-    "type": "practice",
-    "pinned": false,
-    "title": "One ANOPS ticket per issue, not per email",
-    "body": "When a customer sends multiple follow-up emails on the same issue, keep updating the original ANOPS ticket. Duplicate tickets fragment the investigation history and slow down Analytics Engineering.",
-    "author": "Govind B. — Manager",
-    "date": "2026-09-04"
-  },
-  {
-    "id": "p4",
-    "type": "update",
-    "pinned": false,
-    "title": "Driveri accessory escalations now route to Hardware Ops",
-    "body": "D-Hub and VDR hardware escalations route to the Hardware Ops queue instead of general ANOPS. Use the \"Hardware Ops\" component when filing.",
-    "author": "Priya S. — SME",
-    "date": "2026-08-28"
-  }
+  {"id":"p1","type":"update","pinned":true,"title":"IDMS report layout refresh — rolling out this week","body":"Alerts and Coaching reports have a new column order starting this week. No action needed — if a customer says a report \"looks different,\" this is why.","author":"Priya S. — SME","date":"2026-09-15"},
+  {"id":"p2","type":"practice","pinned":false,"title":"Confirm tenant timezone before reading alert timestamps","body":"Alert timestamps are stored in the tenant's configured local timezone, not yours. Check the tenant timezone in IDMS before telling a customer an alert \"happened at the wrong time.\"","author":"Govind B. — Manager","date":"2026-09-10"},
+  {"id":"p3","type":"practice","pinned":false,"title":"One ANOPS ticket per issue, not per email","body":"When a customer sends multiple follow-up emails on the same issue, keep updating the original ANOPS ticket. Duplicate tickets fragment the investigation history and slow down Analytics Engineering.","author":"Govind B. — Manager","date":"2026-09-04"},
+  {"id":"p4","type":"update","pinned":false,"title":"Driveri accessory escalations now route to Hardware Ops","body":"D-Hub and VDR hardware escalations route to the Hardware Ops queue instead of general ANOPS. Use the \"Hardware Ops\" component when filing.","author":"Priya S. — SME","date":"2026-08-28"}
 ]

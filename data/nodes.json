@@ -1,167 +1,25 @@
 {
-  "amz-q1": {
-    "id": "amz-q1",
-    "categoryId": "amz",
-    "type": "question",
-    "text": "Is the customer asking about Amazon Relay tracking/ELD data, or a general (non-Amazon) fleet account issue?",
-    "next": "amz-q2"
-  },
-  "amz-q2": {
-    "id": "amz-q2",
-    "categoryId": "amz",
-    "type": "question",
-    "text": "Confirm the account is flagged as an Amazon Relay carrier in IDMS — is the Relay integration toggle showing Active?",
-    "next": "q-1"
-  },
-  "amz-res": {
-    "id": "amz-res",
-    "categoryId": "amz",
-    "type": "resolution",
-    "text": "If Active but data is still missing, gather the trip ID and timestamp, then escalate to Analytics Engineering via ANOPS with the trip ID attached. Don't ask the customer for further Amazon-side details."
-  },
-  "idms-q1": {
-    "id": "idms-q1",
-    "categoryId": "idms",
-    "type": "question",
-    "text": "Is the customer unable to log in to IDMS, or logged in but missing data on a report or dashboard?",
-    "choices": [
-      {
-        "label": "Can't log in",
-        "next": "idms-q2a"
-      },
-      {
-        "label": "Missing data",
-        "next": "idms-q2b"
-      }
-    ]
-  },
-  "idms-q2a": {
-    "id": "idms-q2a",
-    "categoryId": "idms",
-    "type": "question",
-    "text": "Is this their first login, or did access work before and then stop?",
-    "next": "idms-res-a"
-  },
-  "idms-res-a": {
-    "id": "idms-res-a",
-    "categoryId": "idms",
-    "type": "resolution",
-    "text": "First login: verify the invite email and role assignment in IDMS Admin. Previously working: check for a recent password reset or SSO sync issue, then reset access."
-  },
-  "idms-q2b": {
-    "id": "idms-q2b",
-    "categoryId": "idms",
-    "type": "question",
-    "text": "Which report is missing data — Alerts, Coaching, or Fleet Summary?",
-    "next": "idms-res-b"
-  },
-  "idms-res-b": {
-    "id": "idms-res-b",
-    "categoryId": "idms",
-    "type": "escalate",
-    "text": "Note the exact report name, tenant ID, and date range, then escalate to Analytics Engineering — most missing-data cases trace to a pipeline delay, not a portal bug."
-  },
-  "app-q1": {
-    "id": "app-q1",
-    "categoryId": "app",
-    "type": "question",
-    "text": "Is the Driveri mobile/tablet app failing to open, or opening but not syncing alerts?",
-    "next": "app-q2"
-  },
-  "app-q2": {
-    "id": "app-q2",
-    "categoryId": "app",
-    "type": "question",
-    "text": "What app version and device OS is the driver running?",
-    "next": "app-res"
-  },
-  "app-res": {
-    "id": "app-res",
-    "categoryId": "app",
-    "type": "resolution",
-    "text": "If the app version is more than two releases behind current, have the driver update from the store first — most sync failures on old builds clear after updating. If already current, escalate with the version/OS pair attached."
-  },
-  "dev-q1": {
-    "id": "dev-q1",
-    "categoryId": "dev",
-    "type": "question",
-    "text": "Is the device completely offline (no lights, no power), or online but not capturing video?",
-    "choices": [
-      {
-        "label": "Completely offline",
-        "next": "dev-q2a"
-      },
-      {
-        "label": "Online, not capturing",
-        "next": "dev-q2b"
-      }
-    ]
-  },
-  "dev-q2a": {
-    "id": "dev-q2a",
-    "categoryId": "dev",
-    "type": "question",
-    "text": "Has the driver checked the power harness connection and the inline fuse?",
-    "next": "dev-res-a"
-  },
-  "dev-res-a": {
-    "id": "dev-res-a",
-    "categoryId": "dev",
-    "type": "escalate",
-    "text": "If the fuse is intact and the harness is seated, this is a hardware fault — open a device replacement ticket in ANOPS with the device serial number."
-  },
-  "dev-q2b": {
-    "id": "dev-q2b",
-    "categoryId": "dev",
-    "type": "question",
-    "text": "Is the SD card present and showing as healthy in device diagnostics?",
-    "next": "dev-res-b"
-  },
-  "dev-res-b": {
-    "id": "dev-res-b",
-    "categoryId": "dev",
-    "type": "resolution",
-    "text": "A failed or missing SD card explains most \"online but not recording\" cases — dispatch a replacement card before escalating further."
-  },
-  "acc-q1": {
-    "id": "acc-q1",
-    "categoryId": "acc",
-    "type": "question",
-    "text": "Which accessory is affected — D-Hub, VDR, DMS, or an external camera?",
-    "next": "acc-q2"
-  },
-  "acc-q2": {
-    "id": "acc-q2",
-    "categoryId": "acc",
-    "type": "question",
-    "text": "Is the accessory failing to power on, or powering on but not linking to the main device?",
-    "next": "acc-res"
-  },
-  "acc-res": {
-    "id": "acc-res",
-    "categoryId": "acc",
-    "type": "resolution",
-    "text": "Power issues point to the harness or fuse for that accessory port. Linking issues usually clear after a device reboot and re-pair — if not, escalate with the accessory type and device serial number."
-  },
-  "q-1": {
-    "id": "q-1",
-    "categoryId": "amz",
-    "type": "question",
-    "text": "Test",
-    "next": "q-2"
-  },
-  "q-2": {
-    "id": "q-2",
-    "categoryId": "amz",
-    "type": "question",
-    "text": "Test 2",
-    "next": "q-3"
-  },
-  "q-3": {
-    "id": "q-3",
-    "categoryId": "amz",
-    "type": "question",
-    "text": "Test 3",
-    "next": "amz-res"
-  }
+  "amz-q1": {"id":"amz-q1","categoryId":"amz","type":"question","text":"Is the customer asking about Amazon Relay tracking/ELD data, or a general (non-Amazon) fleet account issue?","next":"amz-q2"},
+  "amz-q2": {"id":"amz-q2","categoryId":"amz","type":"question","text":"Confirm the account is flagged as an Amazon Relay carrier in IDMS — is the Relay integration toggle showing Active?","next":"amz-res"},
+  "amz-res": {"id":"amz-res","categoryId":"amz","type":"resolution","text":"If Active but data is still missing, gather the trip ID and timestamp, then escalate to Analytics Engineering via ANOPS with the trip ID attached. Don't ask the customer for further Amazon-side details."},
+
+  "idms-q1": {"id":"idms-q1","categoryId":"idms","type":"question","text":"Is the customer unable to log in to IDMS, or logged in but missing data on a report or dashboard?","choices":[{"label":"Can't log in","next":"idms-q2a"},{"label":"Missing data","next":"idms-q2b"}]},
+  "idms-q2a": {"id":"idms-q2a","categoryId":"idms","type":"question","text":"Is this their first login, or did access work before and then stop?","next":"idms-res-a"},
+  "idms-res-a": {"id":"idms-res-a","categoryId":"idms","type":"resolution","text":"First login: verify the invite email and role assignment in IDMS Admin. Previously working: check for a recent password reset or SSO sync issue, then reset access."},
+  "idms-q2b": {"id":"idms-q2b","categoryId":"idms","type":"question","text":"Which report is missing data — Alerts, Coaching, or Fleet Summary?","next":"idms-res-b"},
+  "idms-res-b": {"id":"idms-res-b","categoryId":"idms","type":"escalate","text":"Note the exact report name, tenant ID, and date range, then escalate to Analytics Engineering — most missing-data cases trace to a pipeline delay, not a portal bug."},
+
+  "app-q1": {"id":"app-q1","categoryId":"app","type":"question","text":"Is the Driveri mobile/tablet app failing to open, or opening but not syncing alerts?","next":"app-q2"},
+  "app-q2": {"id":"app-q2","categoryId":"app","type":"question","text":"What app version and device OS is the driver running?","next":"app-res"},
+  "app-res": {"id":"app-res","categoryId":"app","type":"resolution","text":"If the app version is more than two releases behind current, have the driver update from the store first — most sync failures on old builds clear after updating. If already current, escalate with the version/OS pair attached."},
+
+  "dev-q1": {"id":"dev-q1","categoryId":"dev","type":"question","text":"Is the device completely offline (no lights, no power), or online but not capturing video?","choices":[{"label":"Completely offline","next":"dev-q2a"},{"label":"Online, not capturing","next":"dev-q2b"}]},
+  "dev-q2a": {"id":"dev-q2a","categoryId":"dev","type":"question","text":"Has the driver checked the power harness connection and the inline fuse?","next":"dev-res-a"},
+  "dev-res-a": {"id":"dev-res-a","categoryId":"dev","type":"escalate","text":"If the fuse is intact and the harness is seated, this is a hardware fault — open a device replacement ticket in ANOPS with the device serial number."},
+  "dev-q2b": {"id":"dev-q2b","categoryId":"dev","type":"question","text":"Is the SD card present and showing as healthy in device diagnostics?","next":"dev-res-b"},
+  "dev-res-b": {"id":"dev-res-b","categoryId":"dev","type":"resolution","text":"A failed or missing SD card explains most \"online but not recording\" cases — dispatch a replacement card before escalating further."},
+
+  "acc-q1": {"id":"acc-q1","categoryId":"acc","type":"question","text":"Which accessory is affected — D-Hub, VDR, DMS, or an external camera?","next":"acc-q2"},
+  "acc-q2": {"id":"acc-q2","categoryId":"acc","type":"question","text":"Is the accessory failing to power on, or powering on but not linking to the main device?","next":"acc-res"},
+  "acc-res": {"id":"acc-res","categoryId":"acc","type":"resolution","text":"Power issues point to the harness or fuse for that accessory port. Linking issues usually clear after a device reboot and re-pair — if not, escalate with the accessory type and device serial number."}
 }

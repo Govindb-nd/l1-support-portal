@@ -1,37 +1,7 @@
 [
-  {
-    "id": "amz",
-    "code": "AMZ",
-    "name": "Amazon / Non-Amazon Support",
-    "blurb": "Relay integration, ELD data, and general account cases.",
-    "rootId": "amz-q1"
-  },
-  {
-    "id": "idms",
-    "code": "IDM",
-    "name": "IDMS Portal",
-    "blurb": "Login access and missing report or dashboard data.",
-    "rootId": "idms-q1"
-  },
-  {
-    "id": "app",
-    "code": "APP",
-    "name": "Driveri App",
-    "blurb": "Mobile and tablet app issues for drivers.",
-    "rootId": "app-q1"
-  },
-  {
-    "id": "dev",
-    "code": "DEV",
-    "name": "Driveri Device",
-    "blurb": "In-cab hardware power and recording issues.",
-    "rootId": "dev-q1"
-  },
-  {
-    "id": "acc",
-    "code": "ACC",
-    "name": "Driveri Accessories",
-    "blurb": "D-Hub, VDR, DMS, and external cameras.",
-    "rootId": "acc-q1"
-  }
+  {"id":"amz", "code":"AMZ", "name":"Amazon / Non-Amazon Support", "blurb":"Relay integration, ELD data, and general account cases.", "rootId":"amz-q1"},
+  {"id":"idms", "code":"IDM", "name":"IDMS Portal", "blurb":"Login access and missing report or dashboard data.", "rootId":"idms-q1"},
+  {"id":"app", "code":"APP", "name":"Driveri App", "blurb":"Mobile and tablet app issues for drivers.", "rootId":"app-q1"},
+  {"id":"dev", "code":"DEV", "name":"Driveri Device", "blurb":"In-cab hardware power and recording issues.", "rootId":"dev-q1"},
+  {"id":"acc", "code":"ACC", "name":"Driveri Accessories", "blurb":"D-Hub, VDR, DMS, and external cameras.", "rootId":"acc-q1"}
 ]
